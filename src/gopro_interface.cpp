@@ -67,7 +67,7 @@ public:
         if (result) {
             timestamp = rclcpp::Clock().now().nanoseconds();
             RCLCPP_INFO(this->get_logger(), "Stopped Recording at timestamp - %ld", timestamp);
-            path = get_last_media_path();
+            get_last_media_path(path);
             rclcpp::sleep_for(std::chrono::seconds(2)); // Wait for the file to be written
             return true;
         }
@@ -169,9 +169,7 @@ int main(int argc, char ** argv) {
 
     node->enable_usb_control();
 
-    // Declare the timestamp variable
     int64_t start_timestamp;
-    // Pass the timestamp variable directly, not its address
     node->start_recording(start_timestamp);
 
     // Simulate some operation time
@@ -179,13 +177,11 @@ int main(int argc, char ** argv) {
 
     std::string path;
     int64_t stop_timestamp;
-    // Pass the variables directly, not their addresses
     node->stop_recording(path, stop_timestamp);
 
     node->disable_usb_control();
 
-    std::string path;
-    if(node->get_last_media_path(path)){
+    if(!path.empty()){
         RCLCPP_INFO(node->get_logger(), "Last Path: %s", path.c_str());
     }
 
